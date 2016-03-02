@@ -1,50 +1,59 @@
+# Assignment 10: Graphical User Interface
 from tkinter import *
+import Model.py, View,py
 
-class MyFrame(Frame):
+class Controller:
+    """ The Controller for the Convert Temperature GUI app that follows the MVC architecture.
+        When the user presses a Button on the View, this Controller calls the corresponding method in
+        the Model. It then adds a new Label in the app containing the temperature conversion result.
+    """
 
     def __init__(self):
-        Frame.__init__(self)
-        self.pack()
-        self.createWidgets()
+        """ Starts the Tk framework with title "Convert Temperature", instantiates the Model ConvertTemp,
+            instantiates the View MyFrame, and starts the event loop that waits for the user to press a
+            Button on the View (after entering text in the Entry).
+        """
+        root = Tk()
+        root.title("Convert Temperature")
+        self.model = mluozhang_Model.ConvertTemp()
+        self.view = mluozhang_View.MyFrame(self)
+        self.view.mainloop()
+        root.destroy()
 
-    def createWidgets(self):
-        self.entry_label = Label(self, text="Temperature")
-        self.entry_label.pack(side=LEFT, fill=BOTH, expand=1)
-        self.temp_entry = Entry()
-        self.temp_entry.pack(side=LEFT, fill=BOTH, expand=1)
+    def Tf_to_Tc(self, temp):
+        """ Calls the method getTc() from the Model when the user presses the Tf_to_Tc button
+            ("Convert Fahrenheit to Celcius"). Creates a new Label to display the results of
+            the conversion.
+        """
+        self.Tc = self.model.getTc(temp)
+        if isinstance(self.Tc, float):
+            print_string = "{0}°F is equivalent to {1:.1f}°C".format(temp, self.Tc)
+        else:
+            print_string = "Please input a number."
+        self.answer = Label(self.view, text=print_string)
+        self.answer.grid(sticky=S)
+        self.clear_text()
 
-        self.Tf_to_Tc = Button(self, text="Convert Fahrenheit to Celcius", command=self.getTc)
-        self.Tf_to_Tc.pack(fill=BOTH, expand=1)
+    def Tc_to_Tf(self, temp):
+        """ Calls the method getTf() from the Model when the user presses the Tc_to_Tf button
+            ("Convert Celcius to Fahrenheit"). Creates a new Label to display the results of
+            the conversion.
+        """
+        self.Tf = self.model.getTf(temp)
+        if isinstance(self.Tf, float):
+            print_string = "{0}°C is equivalent to {1:.1f}°F".format(temp, self.Tf)
+        else:
+            print_string = "Please input a number."
+        self.answer = Label(self.view, text=print_string)
+        self.answer.grid(sticky=S)
+        self.clear_text()
 
-        self.Tc_to_Tf = Button(self, text="Convert Celcius to Fahrenheit", command=self.getTf)
-        self.Tc_to_Tf.pack(fill=BOTH, expand=1)
+    def clear_text(self):
+        """ Clears the text in the Entry field.
+        """
+        self.view.temp_entry.delete(0, END)
 
-        self.quitButton = Button(self, text="Quit", command=self.quit)
-        self.quitButton.pack(side=BOTTOM, fill=BOTH, expand=1)
-
-    def getTc(self):
-        try:
-            Tf = float(self.temp_entry.get())
-            Tc = (5/9.)*(Tf-32)
-            self.answer_label = Label(self, text="{0}°F is equivalent to {1:.1f}°C".format(Tf, Tc))
-            self.answer_label.pack(fill=BOTH, expand=1)
-        except:
-            self.bad_entry = Label(self, text="Please enter a number only.")
-            self.bad_entry.pack(fill=BOTH, expand=1)
-
-    def getTf(self):
-        try:
-            Tc = float(self.temp_entry.get())
-            Tf = ((9/5.)*Tc)+32
-            self.answer_label = Label(self, text="{0}°C is equivalent to {1:.1f}°F".format(Tc, Tf))
-            self.answer_label.grid()
-        except:
-            self.bad_entry = Label(self, text="Please enter a number only.")
-            self.bad_entry.grid()
-
-if __name__ == '__main__':
-    root = Tk()
-    root.title("Convert Temperature")
-    app = MyFrame()
-    app.mainloop()
-    root.destroy()
+""" Main program to initiate the Controller.
+"""
+if __name__ == "__main__":
+    c = Controller()
