@@ -1,3 +1,9 @@
+""" issues:
+- bug in quitting from logged in user - login calls showmenu() while still in while loop; returns back to it when user quits rather than exiting while loop completely (current bandaid patch: sys.exit())
+
+- encrypt password
+"""
+
 import time, shelve, sys
 class UserDatabase:
     """ create a UserDatabase class that stores a dictionary of users as keys and their passwords and last login time
